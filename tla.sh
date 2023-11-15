@@ -5,8 +5,6 @@ generate_acronyms() {
   local length=$1
   local chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   local count=$((26**length))
-  local arr=()
-  
   for (( i=0; i<count; i++ )); do
     local num=$i
     local acronym=""
@@ -15,10 +13,8 @@ generate_acronyms() {
       acronym="${chars:$idx:1}$acronym"
       num=$((num / 26))
     done
-    arr+=("$acronym")
+    echo "$acronym"
   done
-
-  echo "${arr[@]}"
 }
 
 # Function to check if an acronym is in use on Wikipedia
@@ -31,8 +27,7 @@ check_acronym() {
 
 # Main loop to check acronyms of length 1 to 6
 for length in {1..6}; do
-  acronyms=($(generate_acronyms $length))
-  for acronym in "${acronyms[@]}"; do
-    check_acronym $acronym
+  generate_acronyms $length | while read -r acronym; do
+    check_acronym "$acronym"
   done
 done
