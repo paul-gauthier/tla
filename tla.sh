@@ -20,9 +20,13 @@ generate_acronyms() {
 # Function to check if an acronym is in use on Wikipedia
 check_acronym() {
   local acronym=$1
-  # Placeholder for actual Wikipedia check
-  # You would need to implement an API request to Wikipedia here
-  echo "Checking $acronym on Wikipedia..."
+  local response=$(curl -s "https://en.wikipedia.org/w/api.php?action=query&titles=$acronym&format=json")
+
+  if [[ $response == *"\"missing\""* ]]; then
+    echo "Acronym $acronym is not in use on Wikipedia."
+  else
+    echo "Acronym $acronym is in use on Wikipedia."
+  fi
 }
 
 # Main loop to check acronyms of length 1 to 6
