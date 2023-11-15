@@ -1,23 +1,22 @@
 #!/bin/bash
 
-# Function to generate all possible acronyms of a given length
+# Function to generate all possible acronyms of a given length iteratively
 generate_acronyms() {
   local length=$1
   local chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  local count=$((26**length))
   local arr=()
   
-  # Initialize array with single letters for length 1
-  if [ "$length" -eq 1 ]; then
-    arr=($(echo $chars | fold -w1))
-  else
-    # Get acronyms of length-1 to build upon
-    local prev_acronyms=($(generate_acronyms $((length-1))))
-    for prefix in "${prev_acronyms[@]}"; do
-      for (( i=0; i<${#chars}; i++ )); do
-        arr+=("$prefix${chars:$i:1}")
-      done
+  for (( i=0; i<count; i++ )); do
+    local num=$i
+    local acronym=""
+    for (( j=0; j<length; j++ )); do
+      local idx=$((num % 26))
+      acronym="${chars:$idx:1}$acronym"
+      num=$((num / 26))
     done
-  fi
+    arr+=("$acronym")
+  done
 
   echo "${arr[@]}"
 }
